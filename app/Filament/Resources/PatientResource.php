@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\ImageColumn;
 
 class PatientResource extends Resource
 {
@@ -39,6 +40,17 @@ class PatientResource extends Resource
             Forms\Components\Select::make('owner_id')
                 ->relationship('owner', 'name')
                 ->required(),
+            Forms\Components\FileUpload::make('image_url')
+                ->label('Gambar Pasien')
+                ->image()
+                ->imageEditor()
+                ->imageCropAspectRatio('1:1') 
+                ->imageResizeTargetWidth(300) 
+                ->imageResizeTargetHeight(300)
+                ->directory('patients') 
+                ->visibility('public')
+                ->required(),
+            
                 
             ]);
     }
@@ -47,6 +59,10 @@ class PatientResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image_url')
+                    ->label('Foto')
+                    ->circular()
+                    ->size(50),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('type'),
                 Tables\Columns\TextColumn::make('date_of_birth'),
